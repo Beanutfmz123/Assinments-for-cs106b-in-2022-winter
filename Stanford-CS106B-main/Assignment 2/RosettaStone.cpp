@@ -83,10 +83,21 @@ Map<string, double> topKGramsIn(const Map<string, double>& source, int numToKeep
     {
         pq.dequeue();
     }
+    if(numToKeep <= size)
+    {
     for(int i = 0;i < numToKeep;i++)//将留下来的进行储存
     {
         string temp = pq.dequeue();
         output[temp] = source[temp];
+    }
+    }
+    else//如果要求的个数超出现存的个数的情况
+    {
+        for(int i = 0;i < size;i++)
+        {
+            string temp = pq.dequeue();
+            output[temp] = source[temp];
+        }
     }
     return output;
 }
@@ -95,7 +106,7 @@ double cosineSimilarityOf(const Map<string, double>& lhs, const Map<string, doub
     double return_val = 0;
     Vector<string> keys_of_lhs = lhs.keys();
     Vector<string> keys_of_rhs = rhs.keys();
-    int size_of_lhs = keys_of_rhs.size();
+    int size_of_lhs = keys_of_lhs.size();
     int size_of_rhs = keys_of_rhs.size();
     for(int i = 0;i < size_of_lhs;i++)
     {
