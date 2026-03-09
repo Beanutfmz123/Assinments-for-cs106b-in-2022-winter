@@ -39,11 +39,11 @@ Grid<bool> floodedRegionsIn(const Grid<double>& terrain,
             {
                 if(terrain.get(x1,y1) <= height)
                 {
-                    result.set(x1,y1,true);//更新状态
-                    GridLocation tmp;
-                    tmp.row = x1;
-                    tmp.col = y1;
-                    flooded_area.enqueue(tmp);//入队
+                    if(!result.get(x1,y1))//缺少了已访问标记导致死循环
+                    {
+                        result.set(x1,y1,true);//更新状态
+                        flooded_area.enqueue({x1,y1});//入队，写法更简洁
+                    }
                 }
             }
         }
