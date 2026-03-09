@@ -1,16 +1,54 @@
 #include "RisingTides.h"
 #include "GUI/SimpleTest.h"
 #include "queue.h"
+#include"grid.h"
 using namespace std;
+
+Vector<int> dx={0,0,1,-1};
+Vector<int>dy = {1,-1,0,0};
 
 Grid<bool> floodedRegionsIn(const Grid<double>& terrain,
                             const Vector<GridLocation>& sources,
                             double height) {
-    /* TODO: Delete this line and the next four lines, then implement this function. */
-    (void) terrain;
-    (void) sources;
-    (void) height;
-    return {};
+    Queue<GridLocation> flooded_area;
+    int cols = terrain.numCols();
+    int rows = terrain.numRows();
+    Grid<bool> result(rows,cols,false);
+    int size = sources.size();
+    if(size == 0)
+    {
+        return result;
+    }
+    for(int i = 0;i < size;i++)
+    {
+        double land_height = terrain.get(sources[i].row,sources[i].col);
+        if(land_height <= height)
+        {
+            result.set(sources[i].row,sources[i].col,true);
+            flooded_area.enqueue(sources[i]);//入队
+        }
+    }
+    while(!flooded_area.isEmpty())
+    {
+        GridLocation current = flooded_area.dequeue();//出队
+        for(int i = 0;i < 4;i++)
+        {
+            int x1 = current.row + dx[i];
+            int y1 = current.col + dy[i];
+            if(terrain.inBounds(x1,y1))
+            {
+                if(terrain.get(x1,y1) <= height)
+                {
+                    result.set(x1,y1,true);//更新状态
+                    GridLocation tmp;
+                    tmp.row = x1;
+                    tmp.col = y1;
+                    flooded_area.enqueue(tmp);//入队
+                }
+            }
+        }
+    }
+    return result;
 }
 
 
