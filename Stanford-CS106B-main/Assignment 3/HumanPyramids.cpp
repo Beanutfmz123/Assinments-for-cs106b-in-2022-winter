@@ -1,15 +1,52 @@
 #include "HumanPyramids.h"
+#include"error.h"
+#include"Vector.h"
 using namespace std;
+
+int pounds = 160;
 
 /* TODO: Refer to HumanPyramids.h for more information about what this function should do.
  * Then, delete this comment.
  */
+
+double weightonbackofrec(int row,int col,int height,Vector<Vector<double>>& memo)
+{
+
+    if(memo[row][col] != -1.0)
+    {
+        return memo[row][col];
+    }
+
+    double weight = 0;
+
+    if(col > 0)
+    {
+        weight += weightonbackofrec(row-1,col-1,height,memo)/2 + pounds/2;
+    }
+    if(col < row)
+    {
+        weight += weightonbackofrec(row-1,col,height,memo)/2 + pounds/2;
+    }
+    memo[row][col] = weight;
+    return weight;
+}
+
 double weightOnBackOf(int row, int col, int pyramidHeight) {
-    /* TODO: Delete the next few lines and implement this function. */
-    (void) row;
-    (void) col;
-    (void) pyramidHeight;
-    return 0;
+    if(row< 0 || col < 0 || col > row||row >= pyramidHeight)
+    {
+        error("Out of doundary");
+    }
+    
+    Vector<Vector<double>> memo(pyramidHeight,Vector<double>(pyramidHeight,-1.0));//一定要有行列数信息初始化
+    for(int i = 0;i <= row;i++)
+    {
+        for(int j = 0;j <= col;j++)
+        {
+            memo[i][j] = -1.0;
+        }
+    }
+    memo[0][0] = 0;
+    return weightonbackofrec(row,col,pyramidHeight,memo);
 }
 
 
@@ -19,11 +56,10 @@ double weightOnBackOf(int row, int col, int pyramidHeight) {
 
 /* * * * * * Test Cases * * * * * */
 #include "GUI/SimpleTest.h"
-
-/* TODO: Add your own tests here. You know the drill - look for edge cases, think about
- * very small and very large cases, etc.
- */
-
+PROVIDED_TEST("My Test Case")
+{
+    EXPECT_EQUAL(weightOnBackOf(0,0,1),0);
+}
 
 
 
@@ -51,11 +87,6 @@ PROVIDED_TEST("Function reports errors in invalid cases.") {
 }
 
 PROVIDED_TEST("Stress test: Memoization is implemented (should take under a second)") {
-    /* TODO: Yes, we are asking you to make a change to this test case! Delete the
-     * line immediately after this one - the one that starts with SHOW_ERROR - once
-     * you have implemented memoization to test whether it works correctly.
-     */
-    SHOW_ERROR("This test is configured to always fail until you delete this line from\n         HumanPyramids.cpp. Once you have implemented memoization and want\n         to check whether it works correctly, remove the indicated line.");
 
     /* Do not delete anything below this point. :-) */
 

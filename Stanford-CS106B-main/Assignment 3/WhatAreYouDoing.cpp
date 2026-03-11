@@ -1,4 +1,6 @@
 #include "WhatAreYouDoing.h"
+#include"strlib.h"
+#include<cctype>
 using namespace std;
 
 /* TODO: Read the comments in WhatAreYouDoing.h to see what this function needs to do, then
@@ -7,10 +9,44 @@ using namespace std;
  * Don't forget about the tokenize function defined in WhatAreYouDoing.h; you'll almost
  * certainly want to use it.
  */
+
+void generate(Vector<string>& tokens ,int index,string& current,Set<string>& result)
+{
+    if(index == tokens.size())
+    {
+        result.add(current);
+        return;
+    }
+
+    if(!isalpha(tokens[index][0]))
+    {
+        string tmp = current+tokens[index] ;
+        generate(tokens,index+1,tmp,result);
+    }
+    else
+    {
+        string tmp1 = toUpperCase(tokens[index]);
+        string current1 = current+tmp1;
+        generate(tokens,index+1,current1,result);
+        string current2 = current + tokens[index];
+        generate(tokens,index+1,current2,result);
+    }
+}
+
 Set<string> allEmphasesOf(const string& sentence) {
-    /* TODO: Delete this line and the next one, then implement this function. */
-    (void) sentence;
-    return {};
+    Vector<string> strings = tokenize(sentence);
+    int size = strings.size();
+    for(int i = 0;i < size;i++)
+    {
+        if(isalpha(strings[i][0]))
+        {
+            strings[i] = toLowerCase(strings[i]);//转为小写
+        }
+    }
+    Set<string> result;
+    string current = "";
+    generate(strings,0,current,result);
+    return result;
 }
 
 /* * * * * * Test Cases * * * * * */
